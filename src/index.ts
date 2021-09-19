@@ -4,7 +4,7 @@ import { buildURL } from './tools/url'
 function axios(config: AxiosRequestConfig) {
   // TODO: do something
   processConfig(config)
-  xhr(config)
+  xhr(config) 
 }
 function processConfig(config: AxiosRequestConfig) {
   config.url = transformURL(config)
