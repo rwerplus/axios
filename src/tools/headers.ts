@@ -22,6 +22,7 @@ export function processHeaders(headers: any, data: any): any {
 }
 
 export function parseHeaders(headers: string): any {
+  /*解析头部字符串类型数据*/
   let parsed = Object.create(null)
   if (!headers) return parsed
   headers.split('\r\n').forEach((line) => {

@@ -91,7 +91,8 @@ function registerErrorRouter () {
       res.json({
         msg: `hello world`
       })
-    }, 3000)
+      res.end()
+    }, 5000)
   })
 }
 
