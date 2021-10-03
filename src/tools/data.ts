@@ -1,4 +1,5 @@
 import { isPlainObject } from './util'
+
 /**
  * Method of handling request parameters
  *
@@ -12,4 +13,15 @@ export function transformRequest(params: any): any {
   } else {
     return params
   }
+}
+
+export function transformResponse(data: any): any {
+  if (typeof data === 'string') {
+    try {
+      data = JSON.parse(data)
+    } catch (e) {
+      // doto
+    }
+  }
+  return data
 }
