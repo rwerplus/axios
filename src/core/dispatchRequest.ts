@@ -6,7 +6,7 @@ import { processHeaders } from '../tools/headers'
 
 export default function dispatchRequest(config: AxiosRequestConfig): AxiosPromise {
   processConfig(config)
-  return xhr(config).then((res) => {
+  return xhr(config).then((res: AxiosResponse<any>) => {
     return transformResponseData(res)
   })
 }

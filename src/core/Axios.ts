@@ -1,46 +1,95 @@
-import { AxiosPromise, AxiosRequestConfig, Method } from '../types'
+import {
+  AxiosPromise,
+  AxiosRequestConfig,
+  AxiosResponse,
+  Method, RejectedFn,
+  ResolvedFn
+} from '../types'
 import dispatchRequest from './dispatchRequest'
+import InterceptorManager from './InterceptorManager'
 
-export default class Axios {
-  request(conf: AxiosRequestConfig): AxiosPromise {
-    return dispatchRequest(conf)
+interface Interceptors {
+  request: InterceptorManager<AxiosRequestConfig>
+  response: InterceptorManager<AxiosResponse>
+}
+
+interface PromiseChain<T> {
+  resolved: ResolvedFn<T> | ((conf: AxiosRequestConfig) => AxiosPromise)
+  rejected?: RejectedFn<T>
+}
+
+export default class Axios{
+  interceptors: Interceptors
+  constructor() {
+    this.interceptors = {
+      request: new InterceptorManager<AxiosRequestConfig>(),
+      response: new InterceptorManager<AxiosResponse>()
+    }
+  }
+  request<T = any>(url:any,conf?: any): AxiosPromise<T> {
+    if (typeof url === 'string') {
+      if (!conf) conf = {}
+      conf.url = url
+    } else {
+      conf = url
+    }
+    /*增加链式调用*/
+    const chain:PromiseChain<any>[] = [{
+      resolved: dispatchRequest,
+      rejected: undefined
+    }]
+    /*请求中 先添加后执行*/
+    this.interceptors.request.forEach(interceptor => {
+      chain.unshift(interceptor)
+    })
+    /*响应中 先添加先执行*/
+    this.interceptors.response.forEach(interceptor => {
+      chain.push(interceptor)
+    })
+    let promise = Promise.resolve(conf)
+    while (chain.length) {
+      const {resolved,rejected} = chain.shift()!
+      promise = promise.then(resolved,rejected)
+    }
+    return promise
   }
 
-  get(url: string, conf?: AxiosRequestConfig): AxiosPromise {
+  get<T = any>(url: string, conf?: AxiosRequestConfig): AxiosPromise<T> {
     return Axios._requestMethodWithoutData('get', url, conf)
-
   }
 
-  delete(url: string, conf?: AxiosRequestConfig): AxiosPromise {
+  delete<T = any>(url: string, conf?: AxiosRequestConfig): AxiosPromise<T> {
     return Axios._requestMethodWithoutData('delete', url, conf)
   }
 
-  head(url: string, conf?: AxiosRequestConfig): AxiosPromise {
+  head<T = any>(url: string, conf?: AxiosRequestConfig): AxiosPromise<T> {
     return Axios._requestMethodWithoutData('head', url, conf)
   }
 
-  options(url: string, conf?: AxiosRequestConfig): AxiosPromise {
+  options<T = any>(url: string, conf?: AxiosRequestConfig): AxiosPromise<T> {
     return Axios._requestMethodWithoutData('options', url, conf)
   }
 
-  post(url: string, data?: any, conf?: AxiosRequestConfig): AxiosPromise {
+  post<T = any>(url: string, data?: any, conf?: AxiosRequestConfig): AxiosPromise<T> {
     return Axios._requestMethodWithData('post', url, data, conf)
   }
-  put(url: string, data?: any, conf?: AxiosRequestConfig): AxiosPromise {
+
+  put<T = any>(url: string, data?: any, conf?: AxiosRequestConfig): AxiosPromise<T> {
     return Axios._requestMethodWithData('put', url, data, conf)
   }
-  patch(url: string, data?: any, conf?: AxiosRequestConfig): AxiosPromise {
+
+  patch<T = any>(url: string, data?: any, conf?: AxiosRequestConfig): AxiosPromise<T> {
     return Axios._requestMethodWithData('patch', url, data, conf)
   }
 
-  static _requestMethodWithoutData(method: Method, url: string, conf?: AxiosRequestConfig) {
+  private static _requestMethodWithoutData(method: Method, url: string, conf?: AxiosRequestConfig) {
     return Axios._request(Object.assign(conf || {}, {
       method: method,
       url
     }))
   }
 
-  static _requestMethodWithData(method: Method, url: string, data?: any, conf?: AxiosRequestConfig) {
+  private static _requestMethodWithData(method: Method, url: string, data?: any, conf?: AxiosRequestConfig) {
     return Axios._request(Object.assign(conf || {}, {
       method: method,
       url,
@@ -48,7 +97,7 @@ export default class Axios {
     }))
   }
 
-  private static _request(conf: AxiosRequestConfig): AxiosPromise {
+  private static _request<T = any>(conf: AxiosRequestConfig): AxiosPromise<T> {
     return dispatchRequest(conf)
   }
 }
