@@ -7,6 +7,7 @@ import {
 } from '../types'
 import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './InterceptorManager'
+import { mergeConfig } from './mergeConfig'
 
 interface Interceptors {
   request: InterceptorManager<AxiosRequestConfig>
@@ -18,9 +19,10 @@ interface PromiseChain<T> {
   rejected?: RejectedFn<T>
 }
 
-export default class Axios{
-  defaults:AxiosRequestConfig
+export default class Axios {
+  defaults: AxiosRequestConfig
   interceptors: Interceptors
+
   constructor(initConf: AxiosRequestConfig) {
     this.defaults = initConf
     this.interceptors = {
@@ -28,15 +30,18 @@ export default class Axios{
       response: new InterceptorManager<AxiosResponse>()
     }
   }
-  request<T = any>(url:any,conf?: any): AxiosPromise<T> {
+
+  request<T = any>(url: any, conf?: any): AxiosPromise<T> {
     if (typeof url === 'string') {
       if (!conf) conf = {}
       conf.url = url
     } else {
       conf = url
     }
+    /*发送请求前使用合并策略合并请求头*/
+    conf = mergeConfig(this.defaults, conf)
     /*增加链式调用*/
-    const chain:PromiseChain<any>[] = [{
+    const chain: PromiseChain<any>[] = [{
       resolved: dispatchRequest,
       rejected: undefined
     }]
@@ -50,8 +55,8 @@ export default class Axios{
     })
     let promise = Promise.resolve(conf)
     while (chain.length) {
-      const {resolved,rejected} = chain.shift()!
-      promise = promise.then(resolved,rejected)
+      const { resolved, rejected } = chain.shift()!
+      promise = promise.then(resolved, rejected)
     }
     return promise
   }

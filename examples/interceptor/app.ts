@@ -29,13 +29,13 @@ axios.interceptors.response.use(res => {
 
 axios.interceptors.response.eject(interceptor)
 
-axios.defaults.headers['qqq'] = '123456'
+axios.defaults.headers.common['qqq'] = '123456'
 
 axios({
   url: '/interceptor/get',
   method: 'get',
   headers: {
-    test: ''
+    test: '321589'
   }
 }).then((res) => {
   console.log(res.data)
