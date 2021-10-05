@@ -29,6 +29,8 @@ axios.interceptors.response.use(res => {
 
 axios.interceptors.response.eject(interceptor)
 
+axios.defaults.headers['qqq'] = '123456'
+
 axios({
   url: '/interceptor/get',
   method: 'get',
