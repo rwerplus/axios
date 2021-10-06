@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types'
 import { parseHeaders } from '../tools/headers'
-import { createError } from '../types/error'
+import { createError } from '../tools/error'
 import { isURLSameOrigin } from '../tools/url'
 import cookie from '../tools/cookie'
 import { isFormData } from '../tools/util'
@@ -28,7 +28,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     eventsHandle()
     processHeaders()
     processCancel()
-    
+
     request.send(data)
 
     function configureRequest(): void {
