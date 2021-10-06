@@ -31,12 +31,15 @@ axios.interceptors.response.eject(interceptor)
 
 axios.defaults.headers.common['qqq'] = '123456'
 
-axios({
+const instance= axios.create({
   url: '/interceptor/get',
   method: 'get',
   headers: {
     test: '321589'
+  },
+  transformRequest: (data,headers) => {
+    console.log(data)
+    console.log(headers)
   }
-}).then((res) => {
-  console.log(res.data)
 })
+console.log(instance)

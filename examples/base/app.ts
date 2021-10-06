@@ -106,7 +106,10 @@ axios({
   data: {
     a: 1,
     b: 2
-  }
+  },
+  transformRequest: function(data) {
+  console.log('data',data)
+}
 }).then((res) => {
   console.log(res)
 })
