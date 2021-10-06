@@ -10,7 +10,6 @@ axios.interceptors.request.use(config => {
 })
 axios.interceptors.request.use(config => {
   config.headers.test += '3'
-  axios.c
   return config
 })
 

@@ -1,6 +1,5 @@
 import { deepMerge, isPlainObject } from './util'
 import { Method } from '../types'
-import { head } from 'shelljs'
 
 function normalizeHeaderName(headers: any, normalizedName: string): void {
   if (!headers) return
@@ -27,14 +26,11 @@ export function parseHeaders(headers: string): any {
   /*解析头部字符串类型数据*/
   let parsed = Object.create(null)
   if (!headers) return parsed
-  headers.split('\r\n').forEach((line) => {
-    let [key, val] = line.split(':')
+  headers.split('\r\n').forEach(line => {
+    let [key, ...vals] = line.split(':')
     key = key.trim().toLowerCase()
     if (!key) return
-    if (val) {
-      val = val.trim()
-    }
-    parsed[key] = val
+    parsed[key] = vals.join(':').trim()
   })
   return parsed
 }
