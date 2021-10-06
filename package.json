@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/f-voied.umd.js",
-  "module": "dist/f-voied.es5.js",
-  "typings": "dist/types/f-voied.d.ts",
+  "main": "dist/axios.umd.js",
+  "module": "dist/axios.es5.js",
+  "typings": "dist/types/axios.d.ts",
   "files": [
     "dist"
   ],
   "author": "--yunfeng-- <--localfeng@163.com-->",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/yunfeng-Harris/axios.git"
   },
   "license": "MIT",
   "engines": {
