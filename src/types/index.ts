@@ -25,9 +25,11 @@ export interface AxiosRequestConfig {
   transformRequest?: AxiosTransformer | AxiosTransformer[]
   transformResponse?: AxiosTransformer | AxiosTransformer[]
   cancelToken?: CancelToken
-  withCredentials?:boolean
-  xsrfCookieName?:string
-  xsrfHeaderName?:string
+  withCredentials?: boolean
+  xsrfCookieName?: string
+  xsrfHeaderName?: string
+  onDownloadProgress?(e: ProgressEvent): void
+  onUploadProgress?(e: ProgressEvent): void
 
   /*索引签名*/
   [propName: string]: any
@@ -42,8 +44,7 @@ export interface AxiosResponse<T = any> {
   request: any
 }
 
-export interface AxiosPromise<T = any> extends Promise<AxiosResponse<T>> {
-}
+export interface AxiosPromise<T = any> extends Promise<AxiosResponse<T>> {}
 
 export interface AxiosError extends Error {
   config: AxiosRequestConfig
@@ -85,9 +86,9 @@ export interface AxiosInstance extends Axios {
 
 export interface AxiosStatic extends AxiosInstance {
   create(conf: AxiosRequestConfig): AxiosInstance
-  CancelToken:CancelTokenStatic
-  Cancel:CancelStatic
-  isCancel:(value:any) => boolean
+  CancelToken: CancelTokenStatic
+  Cancel: CancelStatic
+  isCancel: (value: any) => boolean
 }
 
 export interface ResolvedFn<T> {
@@ -111,7 +112,7 @@ export interface AxiosTransformer {
 export interface CancelToken {
   promise: Promise<Cancel>
   reason?: Cancel
-  throwIfRequested():void
+  throwIfRequested(): void
 }
 
 export interface Canceler {
@@ -123,18 +124,18 @@ export interface CancelExecutor {
 }
 
 export interface CancelTokenSource {
-  token:CancelToken
-  cancel:Canceler
+  token: CancelToken
+  cancel: Canceler
 }
 export interface CancelTokenStatic {
-  new(executor:CancelExecutor):CancelToken
-  source():CancelTokenSource
+  new (executor: CancelExecutor): CancelToken
+  source(): CancelTokenSource
 }
 
 export interface Cancel {
-  message?:string
+  message?: string
 }
 
 export interface CancelStatic {
-  new(message?:string):Cancel
+  new (message?: string): Cancel
 }
